@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -117,9 +117,18 @@ function Home() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-xs text-muted">
-            <Shield className="size-3.5" />
-            Infrastructure only · no private targeting
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              to="/quantum"
+              className="inline-flex h-10 items-center gap-2 rounded-lg border border-border bg-elevated px-3 text-xs text-muted transition hover:text-fg"
+            >
+              <Activity className="size-3.5" />
+              Quantum Fabric
+            </Link>
+            <div className="hidden items-center gap-2 text-xs text-muted sm:flex">
+              <Shield className="size-3.5" />
+              Infrastructure only · no private targeting
+            </div>
           </div>
         </header>
 
