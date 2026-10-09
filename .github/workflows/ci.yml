@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "feat/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install
+      - name: Core and quantum tests
+        run: >-
+          node --experimental-strip-types --test
+          src/lib/app-data/app-data.test.ts
+          src/lib/app-data/readiness-schedule.test.ts
+          src/lib/auth/gate-identity.test.ts
+          src/lib/auth/sign-in-gate.test.ts
+          src/lib/quantum/*.test.ts
+      - name: Existing platform-script baseline
+        continue-on-error: true
+        run: node --test 'scripts/**/*.test.mjs'
+      - run: npm run typecheck
+      - run: npm run build:dev
