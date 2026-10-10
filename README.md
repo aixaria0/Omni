@@ -18,6 +18,19 @@ Each section has its own SHA3-512 digest. Imported capsules are verified before 
 
 A sealed capsule can also be sent directly to **Bound Quantum Attestation**. QuantumCert includes that exact capsule root in its signed proposal and hybrid binding, then persists the resulting certificate into the shared Quantum Fabric certificate ledger. This attests snapshot integrity and identity; it does **not** claim the underlying OSINT assertion is true.
 
+## Evidence Stress Engine
+
+OmniTrace includes a deterministic robustness lab for the active Hypothesis Lattice. It answers a different question from ordinary scoring: **what would have to fail or disappear for the conclusion to change?**
+
+- leave-one-evidence-out posterior sensitivity
+- exact minimal flip-set search up to a bounded removal depth
+- source-family knockout to expose correlated evidence dependence
+- Shapley-style coalitional contribution to the leader margin (exact for small matrices, deterministic sampling for larger ones)
+- adversarial robustness frontier for removal budgets 0–4
+- entropy-aware next-best collection priorities focused on the closest competing hypotheses
+
+The stress score is a decision-robustness metric, not a truth score. For model-produced Grok lattices, counterfactual percentages are explicitly labeled sensitivity approximations rather than model re-runs.
+
 ## Quantum Fabric
 
 Open `/quantum` in the app. It is intentionally split into three trust boundaries.

@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { EvidenceCapsulePanel } from "@/components/osint/capsule-panel";
+import { StressLab } from "@/components/osint/stress-lab";
 import { LatticeBoard } from "@/components/osint/lattice-board";
 import { PrismGraph } from "@/components/osint/prism-graph";
 import { OverviewPanel, SourcesPanel, TimelinePanel } from "@/components/osint/overview";
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/")({ component: Home });
 const TABS = [
   { id: "overview", label: "Overview" },
   { id: "lattice", label: "Hypothesis Lattice" },
+  { id: "stress", label: "Stress Lab" },
   { id: "prism", label: "Prism" },
   { id: "timeline", label: "Temporal" },
   { id: "sources", label: "Sources" },
@@ -292,6 +294,7 @@ function Home() {
                     upgrading={upgrade.isPending}
                   />
                 ) : null}
+                {tab === "stress" ? <StressLab inv={current} /> : null}
                 {tab === "prism" ? <PrismGraph graph={current.graph} /> : null}
                 {tab === "timeline" ? <TimelinePanel inv={current} /> : null}
                 {tab === "sources" ? <SourcesPanel inv={current} /> : null}
