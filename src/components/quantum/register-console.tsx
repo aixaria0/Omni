@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Activity, Atom, RotateCcw, Send, Waves } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +19,7 @@ const QUICK = [
 
 export function RegisterConsole() {
   const [register] = useState(() => new QuantumRegister(12, "ghz"));
-  const [revision, setRevision] = useState(0);
+  const [, setRevision] = useState(0);
   const [input, setInput] = useState("");
   const [logs, setLogs] = useState<LogEntry[]>([
     {
@@ -28,8 +28,8 @@ export function RegisterConsole() {
       output: "GHZ₁₂ initialized — 4096-dimensional statevector, norm verified.",
     },
   ]);
-  const summary = useMemo(() => register.summary(), [register, revision]);
-  const amplitudes = useMemo(() => register.topAmplitudes(8), [register, revision]);
+  const summary = register.summary();
+  const amplitudes = register.topAmplitudes(8);
 
   function run(command: string) {
     const clean = command.trim();

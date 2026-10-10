@@ -1,8 +1,29 @@
 {
-  "name": "app-builder-workspace",
+  "name": "omni",
+  "description": "Proof-carrying infrastructure investigation, evidence robustness, and quantum/classical attestation workspace.",
   "private": true,
   "sideEffects": false,
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aixaria0/Omni.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aixaria0/Omni/issues"
+  },
+  "homepage": "https://github.com/aixaria0/Omni#readme",
+  "keywords": [
+    "osint",
+    "evidence",
+    "provenance",
+    "autonomous-investigation",
+    "quantum",
+    "braket",
+    "typescript"
+  ],
   "overrides": {
     "nf3": "0.3.17"
   },
@@ -16,10 +37,13 @@
     "preview:stop": "node scripts/preview.mjs stop",
     "typecheck": "tsc --noEmit",
     "check:auth": "node scripts/check-auth-invariant.mjs",
-    "test": "node --test 'scripts/**/*.test.mjs' && node --experimental-strip-types --test src/lib/app-data/app-data.test.ts src/lib/app-data/readiness-schedule.test.ts src/lib/auth/gate-identity.test.ts src/lib/auth/sign-in-gate.test.ts src/lib/quantum/*.test.ts src/lib/osint/*.test.ts",
+    "test": "npm run test:core",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "verify:autopilot": "node --experimental-strip-types scripts/verify-autopilot.mjs"
+    "verify:autopilot": "node --experimental-strip-types scripts/verify-autopilot.mjs",
+    "test:core": "node --experimental-strip-types --test src/lib/app-data/app-data.test.ts src/lib/app-data/readiness-schedule.test.ts src/lib/auth/gate-identity.test.ts src/lib/auth/sign-in-gate.test.ts src/lib/quantum/*.test.ts src/lib/osint/*.test.ts",
+    "test:platform": "node --test 'scripts/**/*.test.mjs'",
+    "validate": "npm run test:core && npm run typecheck && npm run lint && npm run build:dev"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.4",
@@ -94,5 +118,6 @@
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.56.1",
     "vite": "^8.2.0"
-  }
+  },
+  "license": "UNLICENSED"
 }

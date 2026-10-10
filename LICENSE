@@ -1,0 +1,124 @@
+OMNI PROPRIETARY SOURCE LICENSE
+Version 1.0 — 2026
+
+Copyright © 2026 AixAria / aixaria0. All Rights Reserved.
+
+NOTICE
+
+Omni and its source code, documentation, designs, schemas, algorithms as expressed in code,
+artwork, interfaces, and other original materials contained in this repository (collectively,
+the “Work”) are proprietary and are protected by applicable copyright and other intellectual
+property laws.
+
+This repository is made publicly visible for inspection, transparency, demonstration, security
+review, and collaboration through GitHub. Public visibility does not make the Work open source,
+free software, public domain, or freely reusable.
+
+1. NO GENERAL LICENSE GRANT
+
+Except for the limited rights, if any, that the copyright holder is required to grant directly
+under GitHub's applicable Terms of Service solely as a consequence of hosting the repository
+publicly on GitHub (the “Platform Rights”), and except as required by applicable law, no license
+or permission is granted to any person or entity to use the Work.
+
+All rights not expressly granted are reserved by the copyright holder.
+
+2. PROHIBITED ACTS
+
+Without prior express written permission from the copyright holder, you may not, in whole or in
+part:
+
+(a) copy, reproduce, download for reuse, mirror, archive, or re-host the Work outside the scope
+    of the Platform Rights;
+(b) modify, adapt, translate, transform, port, or create derivative works based on the Work;
+(c) distribute, publish, transmit, sublicense, sell, rent, lease, assign, or otherwise make the
+    Work or a derivative of it available to another person or entity;
+(d) use, execute, deploy, host, operate, or provide the Work, or any substantial portion of it,
+    as software, a service, a hosted service, an API, a product, or part of another product;
+(e) incorporate, embed, bundle, link substantial protected portions of, or otherwise reuse the
+    Work in another software project, commercial or non-commercial;
+(f) use the Work to provide consulting, managed services, competitive services, or commercial
+    advantage;
+(g) remove, hide, alter, or misrepresent copyright, ownership, attribution, provenance, or
+    license notices associated with the Work;
+(h) represent the Work, or a confusingly similar derivative, as your own original work.
+
+3. AI, MACHINE LEARNING, AND DATASET RESTRICTIONS
+
+Except to the extent a right is granted directly to GitHub or its affiliates by the copyright
+holder under GitHub's applicable Terms of Service, or to the extent required by applicable law,
+you may not use the Work or any substantial portion of it, directly or indirectly, for:
+
+(a) training, fine-tuning, distilling, aligning, evaluating, benchmarking, or otherwise
+    developing an artificial intelligence or machine-learning model or system;
+(b) creating or augmenting a training, evaluation, retrieval, embedding, vector, synthetic-data,
+    or code-generation dataset;
+(c) automated scraping, bulk extraction, corpus construction, or machine ingestion intended for
+    any activity described in this Section.
+
+4. NO COMMERCIAL OR NON-COMMERCIAL REUSE EXCEPTION
+
+The restrictions in this License apply whether the intended use is commercial, non-commercial,
+educational, research, personal, charitable, governmental, or internal. No such purpose creates
+an implied license.
+
+5. FORKS AND PLATFORM COPIES
+
+A fork, copy, cache, or reproduction created or displayed solely through functionality provided
+by GitHub may exist to the extent permitted by the Platform Rights. Such a fork or copy does not
+receive any broader permission under this License. The Work remains subject to this License and
+all reserved rights.
+
+6. CONTRIBUTIONS
+
+Unless a separate written agreement applies, any person submitting a contribution to this
+repository represents that they have the right to submit it and grants the copyright holder a
+perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, modify, prepare
+derivative works from, distribute, sublicense, relicense, and otherwise exploit that contribution
+as part of or in connection with Omni.
+
+Submitting a contribution does not grant the contributor any ownership interest in pre-existing
+portions of Omni.
+
+7. NO TRADEMARK OR PATENT LICENSE
+
+No trademark, trade name, service mark, logo, brand, or patent rights are granted by this
+License. Any use of the names “Omni”, “OmniTrace”, “Quantum Fabric”, or associated branding must
+comply with applicable law and requires separate permission where such permission is legally
+required.
+
+8. WRITTEN PERMISSION
+
+Any permission outside this License must be granted in an explicit written authorization from
+the copyright holder. Silence, failure to enforce, repository access, a GitHub fork, an issue,
+a pull request, or other interaction does not constitute permission.
+
+9. ENFORCEMENT AND RESERVATION OF RIGHTS
+
+Unauthorized exercise of rights reserved to the copyright holder may constitute infringement or
+other violation of applicable law. The copyright holder reserves all rights and remedies
+available under applicable law. A failure or delay in enforcing any provision does not waive the
+right to enforce it later.
+
+10. DISCLAIMER
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE WORK IS PROVIDED “AS IS” AND WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. THE COPYRIGHT
+HOLDER SHALL NOT BE LIABLE FOR DAMAGES ARISING FROM ACCESS TO, REVIEW OF, OR USE OF THE WORK TO
+THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW.
+
+11. SEVERABILITY
+
+If any provision of this License is held unenforceable, that provision shall be limited or
+severed only to the minimum extent necessary, and the remaining provisions shall remain in
+effect.
+
+12. ENTIRE PERMISSION STATEMENT
+
+This License is the complete public permission statement for the Work unless the copyright
+holder has entered into a separate written agreement with you. Nothing in this License grants
+rights by implication, estoppel, exhaustion beyond what applicable law requires, or otherwise.
+
+For licensing requests, contact the repository owner through the official GitHub account:
+https://github.com/aixaria0

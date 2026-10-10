@@ -38,7 +38,7 @@ function parseJson(text: string): Json {
   try {
     return JSON.parse(trimmed) as Json;
   } catch {
-    const start = trimmed.search(/[\[{]/);
+    const start = trimmed.search(/[[{]/);
     if (start >= 0) {
       try {
         return JSON.parse(trimmed.slice(start)) as Json;

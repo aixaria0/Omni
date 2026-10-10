@@ -19,17 +19,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Core and quantum tests
-        run: >-
-          node --experimental-strip-types --test
-          src/lib/app-data/app-data.test.ts
-          src/lib/app-data/readiness-schedule.test.ts
-          src/lib/auth/gate-identity.test.ts
-          src/lib/auth/sign-in-gate.test.ts
-          src/lib/quantum/*.test.ts
-          src/lib/osint/*.test.ts
+      - name: Core, OSINT, and quantum tests
+        run: npm run test:core
       - name: Existing platform-script baseline
         continue-on-error: true
-        run: node --test 'scripts/**/*.test.mjs'
+        run: npm run test:platform
       - run: npm run typecheck
       - run: npm run build:dev
