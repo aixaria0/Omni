@@ -16,6 +16,7 @@ import {
   type HybridCertificate,
   type QuantumScenario,
 } from "@/lib/quantum/cert";
+import { useCertificateStore } from "@/lib/quantum/store";
 
 const SCENARIOS: Array<{
   id: QuantumScenario;
@@ -31,7 +32,7 @@ const SCENARIOS: Array<{
 ];
 
 export function CertificateDashboard() {
-  const [certificates, setCertificates] = useState<HybridCertificate[]>([]);
+  const { certificates, addCertificate, clearCertificates } = useCertificateStore();
   const [running, setRunning] = useState<QuantumScenario | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -47,7 +48,7 @@ export function CertificateDashboard() {
     setError(null);
     try {
       const certificate = await runCertificateScenario(scenario);
-      setCertificates((current) => [certificate, ...current].slice(0, 20));
+      addCertificate(certificate);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Certificate run failed");
     } finally {
@@ -64,8 +65,9 @@ export function CertificateDashboard() {
             <p className="text-sm font-medium">Scenario forge</p>
           </div>
           <p className="mt-2 text-xs leading-relaxed text-muted">
-            Each run generates fresh Ed25519 validator keys, signs the proposal, verifies the quorum,
-            and binds classical + quantum evidence with SHA3-512.
+            Each run generates fresh Ed25519 validator keys, signs the proposal, verifies the
+            quorum, and binds classical + quantum evidence with SHA3-512. Evidence Capsule
+            attestations created in OmniTrace are persisted into this same certificate ledger.
           </p>
           <div className="mt-4 space-y-2">
             {SCENARIOS.map((scenario) => (
@@ -98,7 +100,7 @@ export function CertificateDashboard() {
               variant="ghost"
               aria-label="Clear certificate history"
               disabled={certificates.length === 0}
-              onClick={() => setCertificates([])}
+              onClick={clearCertificates}
             >
               <Trash2 className="size-4" />
             </Button>
@@ -147,11 +149,12 @@ export function CertificateDashboard() {
 
 function CertificateCard({ certificate }: { certificate: HybridCertificate }) {
   const [expanded, setExpanded] = useState(false);
-  const tone = certificate.status === "ACCEPTED"
-    ? "ok"
-    : certificate.status === "REJECTED"
-      ? "danger"
-      : "warn";
+  const tone =
+    certificate.status === "ACCEPTED"
+      ? "ok"
+      : certificate.status === "REJECTED"
+        ? "danger"
+        : "warn";
   return (
     <article className="rounded-2xl border border-border bg-surface p-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -162,6 +165,15 @@ function CertificateCard({ certificate }: { certificate: HybridCertificate }) {
               {certificate.scenario}
             </span>
           </div>
+          {certificate.subject ? (
+            <div className="mt-3 rounded-lg border border-accent/20 bg-elevated px-3 py-2">
+              <p className="text-[10px] uppercase tracking-[0.12em] text-subtle">Bound subject</p>
+              <p className="mt-1 text-xs text-fg">{certificate.subject.label}</p>
+              <p className="mt-1 truncate font-mono text-[10px] text-muted">
+                root:{certificate.subject.digest}
+              </p>
+            </div>
+          ) : null}
           <p className="mt-3 font-mono text-xs text-muted">cert:{certificate.id}</p>
           <p className="mt-1 text-[11px] text-subtle">
             {new Date(certificate.createdAt).toLocaleString()}
@@ -188,7 +200,10 @@ function CertificateCard({ certificate }: { certificate: HybridCertificate }) {
       {certificate.anomalies.length ? (
         <div className="mt-4 space-y-2">
           {certificate.anomalies.map((anomaly) => (
-            <div key={anomaly} className="flex gap-2 rounded-lg border border-warn/25 bg-warn/5 p-3 text-xs text-muted">
+            <div
+              key={anomaly}
+              className="flex gap-2 rounded-lg border border-warn/25 bg-warn/5 p-3 text-xs text-muted"
+            >
               <CircleAlert className="mt-0.5 size-3.5 shrink-0 text-warn" />
               <span>{anomaly}</span>
             </div>
@@ -211,7 +226,10 @@ function CertificateCard({ certificate }: { certificate: HybridCertificate }) {
           <Hash label="binding" value={certificate.binding.digest} />
           <div className="border-t border-border pt-3">
             {certificate.quorum.votes.map((vote) => (
-              <div key={vote.nodeId} className="mt-2 grid grid-cols-[88px_1fr_auto] gap-2 first:mt-0">
+              <div
+                key={vote.nodeId}
+                className="mt-2 grid grid-cols-[88px_1fr_auto] gap-2 first:mt-0"
+              >
                 <span className="text-subtle">{vote.nodeId}</span>
                 <span className="truncate">sig:{vote.signature}</span>
                 <span className={vote.verified ? "text-ok" : "text-danger"}>
@@ -248,7 +266,9 @@ function Stat({
   return (
     <div className="rounded-xl border border-border bg-elevated p-3">
       <p className="text-[10px] uppercase tracking-[0.12em] text-subtle">{label}</p>
-      <p className={`mt-1 font-mono text-lg tabular ${tone === "ok" ? "text-ok" : tone === "danger" ? "text-danger" : "text-fg"}`}>
+      <p
+        className={`mt-1 font-mono text-lg tabular ${tone === "ok" ? "text-ok" : tone === "danger" ? "text-danger" : "text-fg"}`}
+      >
         {value}
       </p>
     </div>

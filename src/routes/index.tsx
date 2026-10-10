@@ -14,13 +14,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { EvidenceCapsulePanel } from "@/components/osint/capsule-panel";
 import { LatticeBoard } from "@/components/osint/lattice-board";
 import { PrismGraph } from "@/components/osint/prism-graph";
-import {
-  OverviewPanel,
-  SourcesPanel,
-  TimelinePanel,
-} from "@/components/osint/overview";
+import { OverviewPanel, SourcesPanel, TimelinePanel } from "@/components/osint/overview";
 import { EXAMPLE_QUERIES } from "@/lib/osint/classify";
 import { runGrokLattice, runInvestigation } from "@/lib/osint/investigate";
 import { useOsintStore } from "@/lib/osint/store";
@@ -34,6 +31,7 @@ const TABS = [
   { id: "prism", label: "Prism" },
   { id: "timeline", label: "Temporal" },
   { id: "sources", label: "Sources" },
+  { id: "capsule", label: "Evidence Capsule" },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -61,8 +59,7 @@ function Home() {
       setTab("lattice");
       setError(null);
     },
-    onError: (e) =>
-      setError(e instanceof Error ? e.message : "Investigation failed"),
+    onError: (e) => setError(e instanceof Error ? e.message : "Investigation failed"),
   });
 
   const upgrade = useMutation({
@@ -74,8 +71,7 @@ function Home() {
       if (!current) return;
       remember({ ...current, grokLattice: lattice, lattice });
     },
-    onError: (e) =>
-      setError(e instanceof Error ? e.message : "Grok lattice failed"),
+    onError: (e) => setError(e instanceof Error ? e.message : "Grok lattice failed"),
   });
 
   useEffect(() => {
@@ -172,9 +168,7 @@ function Home() {
           </p>
         ) : null}
 
-        {!current && !investigate.isPending ? (
-          <EmptyState onPick={submit} />
-        ) : null}
+        {!current && !investigate.isPending ? <EmptyState onPick={submit} /> : null}
 
         {investigate.isPending ? (
           <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -190,9 +184,7 @@ function Home() {
         {current && !investigate.isPending ? (
           <div className="mt-8 grid gap-6 lg:grid-cols-[220px_1fr]">
             <aside className="hidden lg:block">
-              <p className="text-[11px] uppercase tracking-[0.14em] text-subtle">
-                Cases
-              </p>
+              <p className="text-[11px] uppercase tracking-[0.14em] text-subtle">Cases</p>
               <ul className="mt-3 space-y-1">
                 {history.slice(0, 12).map((h) => (
                   <li key={h.id}>
@@ -214,9 +206,7 @@ function Home() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-8 text-[11px] uppercase tracking-[0.14em] text-subtle">
-                Watchlist
-              </p>
+              <p className="mt-8 text-[11px] uppercase tracking-[0.14em] text-subtle">Watchlist</p>
               <ul className="mt-3 space-y-1">
                 {watchlist.length === 0 ? (
                   <li className="text-xs text-subtle">Empty</li>
@@ -247,13 +237,10 @@ function Home() {
             <section>
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <h1 className="font-mono text-xl tracking-tight sm:text-2xl">
-                    {current.query}
-                  </h1>
+                  <h1 className="font-mono text-xl tracking-tight sm:text-2xl">{current.query}</h1>
                   <p className="mt-1 text-xs text-muted">
                     {current.kind} · {current.graph.nodes.length} entities ·{" "}
-                    {current.sources.filter((s) => s.ok).length}/
-                    {current.sources.length} collectors
+                    {current.sources.filter((s) => s.ok).length}/{current.sources.length} collectors
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -261,9 +248,7 @@ function Home() {
                     variant="secondary"
                     size="sm"
                     onClick={() =>
-                      watching
-                        ? removeWatch(current.query)
-                        : addWatch(current.query)
+                      watching ? removeWatch(current.query) : addWatch(current.query)
                     }
                   >
                     {watching ? (
@@ -273,11 +258,7 @@ function Home() {
                     )}
                     {watching ? "Watching" : "Watch"}
                   </Button>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => window.print()}
-                  >
+                  <Button variant="secondary" size="sm" onClick={() => window.print()}>
                     <Printer className="size-4" />
                     Brief
                   </Button>
@@ -314,6 +295,7 @@ function Home() {
                 {tab === "prism" ? <PrismGraph graph={current.graph} /> : null}
                 {tab === "timeline" ? <TimelinePanel inv={current} /> : null}
                 {tab === "sources" ? <SourcesPanel inv={current} /> : null}
+                {tab === "capsule" ? <EvidenceCapsulePanel inv={current} /> : null}
               </div>
             </section>
           </div>
@@ -323,15 +305,12 @@ function Home() {
       {!ethicsAccepted ? (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-bg/80 p-4 sm:items-center">
           <div className="max-w-lg rounded-2xl border border-border bg-surface p-6 shadow-xl">
-            <p className="text-[11px] uppercase tracking-[0.16em] text-subtle">
-              Operating rules
-            </p>
+            <p className="text-[11px] uppercase tracking-[0.16em] text-subtle">Operating rules</p>
             <h2 className="mt-2 text-lg font-medium">Public infrastructure only</h2>
             <p className="mt-3 text-sm leading-relaxed text-muted">
-              OmniTrace queries public internet records: RDAP, DNS, Certificate
-              Transparency, Shodan InternetDB, AlienVault OTX, BGP, urlscan, and
-              the Wayback Machine. It is for defensive security, journalism, and
-              research. Do not use it to target private individuals.
+              OmniTrace queries public internet records: RDAP, DNS, Certificate Transparency, Shodan
+              InternetDB, AlienVault OTX, BGP, urlscan, and the Wayback Machine. It is for defensive
+              security, journalism, and research. Do not use it to target private individuals.
             </p>
             <Button className="mt-6 w-full" onClick={acceptEthics}>
               Acknowledge
@@ -347,15 +326,12 @@ function EmptyState({ onPick }: { onPick: (q: string) => void }) {
   return (
     <div className="mt-14 max-w-3xl">
       <Badge tone="accent">First of its class</Badge>
-      <h1 className="mt-4 text-3xl font-medium tracking-tight sm:text-4xl">
-        Hypothesis Lattice
-      </h1>
+      <h1 className="mt-4 text-3xl font-medium tracking-tight sm:text-4xl">Hypothesis Lattice</h1>
       <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted">
-        Other tools dump records. OmniTrace fuses public collectors in parallel,
-        then runs Heuer's Analysis of Competing Hypotheses — a CIA-grade
-        method almost no commercial OSINT product implements as a first-class
-        surface. Each hypothesis is scored against evidence, with residual
-        uncertainty left visible.
+        Other tools dump records. OmniTrace fuses public collectors in parallel, then runs Heuer's
+        Analysis of Competing Hypotheses — a CIA-grade method almost no commercial OSINT product
+        implements as a first-class surface. Each hypothesis is scored against evidence, with
+        residual uncertainty left visible.
       </p>
       <div className="mt-8 grid gap-3 sm:grid-cols-3">
         {[
@@ -375,10 +351,7 @@ function EmptyState({ onPick }: { onPick: (q: string) => void }) {
             d: "Entities on concentric hops — infrastructure, not persons.",
           },
         ].map((c) => (
-          <div
-            key={c.t}
-            className="rounded-xl border border-border bg-elevated p-4"
-          >
+          <div key={c.t} className="rounded-xl border border-border bg-elevated p-4">
             <c.icon className="size-4 text-accent" />
             <p className="mt-3 text-sm font-medium">{c.t}</p>
             <p className="mt-1 text-xs leading-relaxed text-muted">{c.d}</p>

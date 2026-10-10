@@ -2,8 +2,21 @@
 
 Omni is a multi-surface research workspace. The repository currently contains two product planes that share one TanStack/React shell:
 
-- **OmniTrace** — public-source infrastructure intelligence and hypothesis analysis.
-- **Omni Quantum Fabric** — a quantum/classical verification lab derived from the project research notes.
+- **OmniTrace** — public-source infrastructure intelligence, hypothesis analysis, reproducible Evidence Capsules and drift detection.
+- **Omni Quantum Fabric** — a quantum/classical verification lab and shared attestation ledger.
+
+## Evidence Capsules + Drift Radar
+
+Every live OmniTrace investigation can be sealed into a portable `omnitrace.evidence-capsule` JSON artifact. A capsule contains normalized source manifests, facts, graph topology, timeline, hypothesis lattice and disagreement state without persisting the raw collector bodies themselves.
+
+The integrity model deliberately separates two identities:
+
+- **`evidenceDigest`** — stable across re-runs when the semantic evidence has not changed.
+- **`rootDigest`** — binds the evidence digest to observation metadata and the concrete investigation identity.
+
+Each section has its own SHA3-512 digest. Imported capsules are verified before they are admitted to the local archive. Re-running the same indicator compares the current live draft to the previous sealed observation and reports semantic source/fact/graph/lattice drift rather than a noisy whole-document JSON diff.
+
+A sealed capsule can also be sent directly to **Bound Quantum Attestation**. QuantumCert includes that exact capsule root in its signed proposal and hybrid binding, then persists the resulting certificate into the shared Quantum Fabric certificate ledger. This attests snapshot integrity and identity; it does **not** claim the underlying OSINT assertion is true.
 
 ## Quantum Fabric
 
@@ -39,7 +52,7 @@ Built-in scenarios:
 - shadow estimate → uncertainty-aware evaluation
 - GHZ₁₂ → multipartite coherence path
 
-Certificate cards expose the proposal digest, quantum digest, binding digest, validator signatures, check results, and anomaly flags.
+Certificate cards expose the proposal digest, quantum digest, binding digest, validator signatures, check results, anomaly flags, and—when present—the bound Evidence Capsule subject.
 
 ### 3. Amazon Braket Bridge
 
@@ -61,24 +74,27 @@ npm install
 npm run dev
 ```
 
-Validation:
+Validation hard gates:
 
 ```bash
-npm test
+node --experimental-strip-types --test \
+  src/lib/app-data/app-data.test.ts \
+  src/lib/app-data/readiness-schedule.test.ts \
+  src/lib/auth/gate-identity.test.ts \
+  src/lib/auth/sign-in-gate.test.ts \
+  src/lib/quantum/*.test.ts \
+  src/lib/osint/capsule.test.ts
 npm run typecheck
-npm run build
+npm run build:dev
 ```
 
-The quantum core tests can also run directly on modern Node without the UI dependency graph:
-
-```bash
-node --experimental-strip-types --test src/lib/quantum/*.test.ts
-```
+CI installs from the synchronized lockfile with `npm ci`. The existing platform-script test baseline remains informational because those template-level tests include pre-existing metadata expectations that do not match the baked OmniTrace identity.
 
 ## Security / evidence boundaries
 
 - No AWS credentials or QPU secrets are stored in the repository.
 - Browser statevector results are labeled simulation results.
 - Physical-device evidence must come from the Braket bridge and its managed job identity/logs.
-- Cryptographic certificate signatures use WebCrypto Ed25519; certificate binding uses a tested SHA3-512 implementation.
+- Cryptographic certificate signatures use WebCrypto Ed25519; certificate and Evidence Capsule binding use a tested SHA3-512 implementation.
+- Imported Evidence Capsules are integrity-verified and capped at 2 MB before local persistence.
 - The retired Amazon Braket TN1 simulator is intentionally not included in the backend registry.
