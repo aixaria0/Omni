@@ -32,7 +32,8 @@ export class QuantumRegister {
     this.dimension = 1 << qubits;
     this.real = new Float64Array(this.dimension);
     this.imag = new Float64Array(this.dimension);
-    initial === "ghz" ? this.resetGhz() : this.resetZero();
+    if (initial === "ghz") this.resetGhz();
+    else this.resetZero();
   }
 
   clone() {

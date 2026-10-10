@@ -1,0 +1,48 @@
+name: Feature request
+description: Propose a focused improvement to Omni
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - OmniTrace collection/fusion
+        - Hypothesis Lattice
+        - Stress Engine
+        - Autopilot
+        - Evidence Capsules / drift
+        - Quantum Fabric / QuantumCert
+        - Amazon Braket bridge
+        - Developer experience / documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What concrete limitation or workflow problem should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the smallest coherent behavior change that solves the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: trust
+    attributes:
+      label: Trust / security impact
+      description: Does this alter evidence semantics, autonomous scope, cryptographic binding, network behavior, or hardware claims?
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: List observable outcomes or invariants that would make the feature complete.
+      placeholder: |
+        - [ ] ...
+        - [ ] ...

@@ -1,0 +1,63 @@
+name: Bug report
+description: Report a reproducible defect in Omni
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a reproducible issue. For vulnerabilities, use the private reporting path described in SECURITY.md instead of a public issue.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - OmniTrace collection/fusion
+        - Hypothesis Lattice
+        - Stress Engine
+        - Autopilot / proof verification
+        - Evidence Capsules / drift
+        - Quantum Fabric / QuantumCert
+        - Amazon Braket bridge
+        - Build / CI / tooling
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the observed behavior and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction
+      description: Minimal steps, inputs, or proof fixture needed to reproduce the issue.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: Commit / branch
+      placeholder: main @ <sha>
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant output
+      description: Paste errors or validation output. Remove secrets/private data first.
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I removed credentials, secrets, and private data from this report.
+          required: true
+        - label: I checked whether the issue already exists.
+          required: true
