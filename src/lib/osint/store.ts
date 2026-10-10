@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { AutopilotReceipt } from "./autopilot";
 import type { EvidenceCapsule } from "./capsule";
 import type { Investigation } from "./types";
 
@@ -15,6 +16,7 @@ type OsintState = {
   watchlist: WatchItem[];
   ethicsAccepted: boolean;
   capsules: Record<string, EvidenceCapsule[]>;
+  autopilotReceipts: Record<string, AutopilotReceipt[]>;
   setCurrent: (inv: Investigation | null) => void;
   remember: (inv: Investigation) => void;
   acceptEthics: () => void;
@@ -22,6 +24,7 @@ type OsintState = {
   removeWatch: (query: string) => void;
   clearHistory: () => void;
   addCapsule: (capsule: EvidenceCapsule) => void;
+  addAutopilotReceipt: (receipt: AutopilotReceipt) => void;
 };
 
 export const useOsintStore = create<OsintState>()(
@@ -32,6 +35,7 @@ export const useOsintStore = create<OsintState>()(
       watchlist: [],
       ethicsAccepted: false,
       capsules: {},
+      autopilotReceipts: {},
       setCurrent: (inv) => set({ current: inv }),
       remember: (inv) => {
         const history = [inv, ...get().history.filter((h) => h.query !== inv.query)].slice(0, 16);
@@ -63,6 +67,15 @@ export const useOsintStore = create<OsintState>()(
         ].slice(0, 12);
         set({ capsules: { ...get().capsules, [query]: capsules } });
       },
+      addAutopilotReceipt: (receipt) => {
+        const query = receipt.query;
+        const existing = get().autopilotReceipts[query] ?? [];
+        const receipts = [
+          receipt,
+          ...existing.filter((item) => item.runRoot !== receipt.runRoot),
+        ].slice(0, 4);
+        set({ autopilotReceipts: { ...get().autopilotReceipts, [query]: receipts } });
+      },
     }),
     {
       name: "omnitrace-v1",
@@ -77,6 +90,7 @@ export const useOsintStore = create<OsintState>()(
         watchlist: s.watchlist,
         ethicsAccepted: s.ethicsAccepted,
         capsules: s.capsules,
+        autopilotReceipts: s.autopilotReceipts,
       }),
     },
   ),

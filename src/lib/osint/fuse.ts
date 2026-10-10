@@ -1,4 +1,4 @@
-import { uid } from "../utils";
+import { sha3_512Hex } from "../quantum/sha3.ts";
 import type {
   Fact,
   GraphEdge,
@@ -11,9 +11,7 @@ import type {
 } from "./types";
 
 function asRecord(v: Json | undefined): Record<string, Json> | null {
-  return v && typeof v === "object" && !Array.isArray(v)
-    ? (v as Record<string, Json>)
-    : null;
+  return v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, Json>) : null;
 }
 
 function str(v: Json | undefined): string | undefined {
@@ -24,6 +22,10 @@ function str(v: Json | undefined): string | undefined {
 
 function arr(v: Json | undefined): Json[] {
   return Array.isArray(v) ? v : [];
+}
+
+function contentId(prefix: string, ...parts: string[]) {
+  return `${prefix}_${sha3_512Hex(parts.join("\u241f")).slice(0, 20)}`;
 }
 
 function source(sources: SourceResult[], id: string) {
@@ -52,14 +54,14 @@ export function fuseInvestigation(
   };
   const addEdge = (sourceId: string, targetId: string, rel: string) => {
     edges.push({
-      id: uid("e"),
+      id: contentId("e", sourceId, targetId, rel),
       source: sourceId,
       target: targetId,
       rel,
     });
   };
   const addFact = (f: Omit<Fact, "id">) => {
-    facts.push({ id: uid("f"), ...f });
+    facts.push({ id: contentId("f", f.label, f.value), ...f });
   };
 
   const qid = addNode({
@@ -75,7 +77,9 @@ export function fuseInvestigation(
   const domains: string[] = [];
 
   if (kind === "domain" || kind === "url" || kind === "email") {
-    domains.push(query.includes("@") ? query.split("@")[1] : query.replace(/^https?:\/\//, "").split("/")[0]);
+    domains.push(
+      query.includes("@") ? query.split("@")[1] : query.replace(/^https?:\/\//, "").split("/")[0],
+    );
   }
 
   const answers = arr(dns?.Answer);
@@ -103,9 +107,10 @@ export function fuseInvestigation(
   const bgp = asRecord(source(sources, "bgpview")?.data);
   const bgpData = asRecord(bgp?.data);
 
-
   const inet = asRecord(source(sources, "internetdb")?.data);
-  const inetPorts = arr(inet?.ports).map((p) => Number(p)).filter((n) => Number.isFinite(n));
+  const inetPorts = arr(inet?.ports)
+    .map((p) => Number(p))
+    .filter((n) => Number.isFinite(n));
   const inetHostnames = arr(inet?.hostnames).map(String);
   const inetVulns = arr(inet?.vulns).map(String);
   const inetCpes = arr(inet?.cpes).map(String);
@@ -117,10 +122,12 @@ export function fuseInvestigation(
 
   const ripe = asRecord(source(sources, "ripe")?.data);
   const ripeData = asRecord(ripe?.data);
-  const ripeAsns = arr(ripeData?.asns).map((a) => {
-    const r = asRecord(a);
-    return str(r?.asn) ? `AS${r!.asn}` : str(a);
-  }).filter(Boolean) as string[];
+  const ripeAsns = arr(ripeData?.asns)
+    .map((a) => {
+      const r = asRecord(a);
+      return str(r?.asn) ? `AS${r!.asn}` : str(a);
+    })
+    .filter(Boolean) as string[];
 
   const crt = arr(source(sources, "crtsh")?.data);
   const certNames = new Set<string>();
@@ -296,9 +303,7 @@ export function fuseInvestigation(
     addFact({
       label: "Organization",
       value: orgName,
-      sourceIds: ["rdap_ip", "rdap_domain", "ipwho", "asn"].filter((id) =>
-        source(sources, id)?.ok,
-      ),
+      sourceIds: ["rdap_ip", "rdap_domain", "ipwho", "asn"].filter((id) => source(sources, id)?.ok),
       tone: "ok",
     });
   if (geoCountry)
@@ -312,9 +317,7 @@ export function fuseInvestigation(
     addFact({
       label: "ASN",
       value: [...asns].join(", "),
-      sourceIds: ["bgpview", "ripe", "ipwho", "asn"].filter((id) =>
-        source(sources, id)?.ok,
-      ),
+      sourceIds: ["bgpview", "ripe", "ipwho", "asn"].filter((id) => source(sources, id)?.ok),
     });
   if (isp)
     addFact({

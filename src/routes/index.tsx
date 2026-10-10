@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { AutopilotPanel } from "@/components/osint/autopilot-panel";
 import { EvidenceCapsulePanel } from "@/components/osint/capsule-panel";
 import { StressLab } from "@/components/osint/stress-lab";
 import { LatticeBoard } from "@/components/osint/lattice-board";
@@ -30,6 +31,7 @@ const TABS = [
   { id: "overview", label: "Overview" },
   { id: "lattice", label: "Hypothesis Lattice" },
   { id: "stress", label: "Stress Lab" },
+  { id: "autopilot", label: "Autopilot" },
   { id: "prism", label: "Prism" },
   { id: "timeline", label: "Temporal" },
   { id: "sources", label: "Sources" },
@@ -295,6 +297,7 @@ function Home() {
                   />
                 ) : null}
                 {tab === "stress" ? <StressLab inv={current} /> : null}
+                {tab === "autopilot" ? <AutopilotPanel inv={current} /> : null}
                 {tab === "prism" ? <PrismGraph graph={current.graph} /> : null}
                 {tab === "timeline" ? <TimelinePanel inv={current} /> : null}
                 {tab === "sources" ? <SourcesPanel inv={current} /> : null}
