@@ -172,6 +172,14 @@ More detail is in [Architecture](docs/ARCHITECTURE.md) and [Security model](SECU
 
 Changes should preserve deterministic verification paths, explicit trust boundaries, and testable claims. Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
 
+## License
+
+**Proprietary — All Rights Reserved. Public does not mean open source.**
+
+The source is publicly inspectable, but no general permission is granted to use, copy, modify, redistribute, deploy, commercialize, incorporate into another product, or use the protected material for AI/ML training or dataset construction. GitHub-specific view/fork rights that arise directly from GitHub’s Terms of Service remain unaffected.
+
+See [LICENSE](LICENSE) for the controlling terms. Any additional permission requires explicit written authorization from the copyright holder.
+
 ## Project status
 
 Omni is under active development. Interfaces and artifact schemas are versioned where portability matters (`omnitrace.evidence-capsule`, `omnitrace.autopilot-receipt`), but application APIs may continue to evolve.

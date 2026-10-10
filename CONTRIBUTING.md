@@ -121,6 +121,10 @@ Use precise terms:
 
 Keep a change coherent. A documentation-only cleanup should not silently change cryptographic semantics. A proof-format change should not be mixed with unrelated styling work unless both are required by the same user-visible feature.
 
+## Contribution licensing
+
+Omni is proprietary, not open source. By submitting a contribution, you agree to the contribution terms in [LICENSE](LICENSE), including the grant necessary for the copyright holder to use, modify, sublicense, relicense, and distribute the contribution as part of Omni. Do not submit code or other material you do not have the right to contribute under those terms.
+
 ## Security-sensitive changes
 
 For vulnerabilities or security boundary issues, do not open a public issue with exploit details. Follow [SECURITY.md](SECURITY.md).
