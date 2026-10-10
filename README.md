@@ -18,6 +18,28 @@ Each section has its own SHA3-512 digest. Imported capsules are verified before 
 
 A sealed capsule can also be sent directly to **Bound Quantum Attestation**. QuantumCert includes that exact capsule root in its signed proposal and hybrid binding, then persists the resulting certificate into the shared Quantum Fabric certificate ledger. This attests snapshot integrity and identity; it does **not** claim the underlying OSINT assertion is true.
 
+## Self-Driving Investigation Runtime
+
+OmniTrace can execute a bounded, closed-loop investigation over **public infrastructure only**. The runtime does not ask an LLM to invent the next step. Each round deterministically combines the current Evidence Stress report, decision-boundary uncertainty, graph risk, collector concentration, and a strict pivot policy to choose the next IP, domain, or ASN observation.
+
+The loop is: **observe → stress → plan → collect pivot → fuse into the case world model → repeat/stop**. It stops when the configured robustness target is reached, no relevant infrastructure pivot remains, or the round budget is exhausted. Each collector round remains a separate request so progress is visible and a single long serverless request is not required.
+
+Every autonomous round is proof-carrying:
+
+- a complete verified Evidence Capsule for that world-model state
+- the Stress Engine checkpoint and its SHA3-512 digest
+- the action that produced the state and the deterministic next action
+- the previous round root and a new SHA3-512 round root
+- a final run root binding the full ordered trace and stop condition
+
+`verifyAutopilotReceipt` replays capsule integrity, the hash chain, the Stress checkpoint, and the planner decision from the recorded state. Exported `.autopilot.json` proofs are verified on import. They can also be checked from the repository without the UI:
+
+```bash
+npm run verify:autopilot -- path/to/run.autopilot.json
+```
+
+The final run root can be bound into QuantumCert as an `autopilot-run` subject and stored in the shared Quantum Fabric ledger. A self-consistent receipt proves trace integrity relative to its run root; external authenticity requires preserving or attesting that root. None of these mechanisms turns public-source assertions into ground truth.
+
 ## Evidence Stress Engine
 
 OmniTrace includes a deterministic robustness lab for the active Hypothesis Lattice. It answers a different question from ordinary scoring: **what would have to fail or disappear for the conclusion to change?**

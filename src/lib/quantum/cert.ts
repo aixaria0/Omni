@@ -21,8 +21,10 @@ export type QuorumVote = {
   verified: boolean;
 };
 
+export type CertificateSubjectKind = "evidence-capsule" | "autopilot-run";
+
 export type CertificateSubject = {
-  kind: "evidence-capsule";
+  kind: CertificateSubjectKind;
   label: string;
   digest: string;
 };
@@ -320,17 +322,27 @@ export async function runCertificateScenario(
   return buildCertificate(scenario);
 }
 
+export async function runBoundDigestCertificate(
+  rootDigest: string,
+  label: string,
+  kind: CertificateSubjectKind,
+): Promise<HybridCertificate> {
+  const normalized = rootDigest.trim().toLowerCase();
+  if (!/^[0-9a-f]{128}$/.test(normalized)) {
+    throw new Error("Bound subject root digest must be a 512-bit hexadecimal SHA3 digest");
+  }
+  return buildCertificate("bell", {
+    kind,
+    label:
+      label.trim() ||
+      (kind === "autopilot-run" ? "OmniTrace Autopilot Run" : "OmniTrace Evidence Capsule"),
+    digest: normalized,
+  });
+}
+
 export async function runBoundCertificate(
   capsuleRootDigest: string,
   label: string,
 ): Promise<HybridCertificate> {
-  const normalized = capsuleRootDigest.trim().toLowerCase();
-  if (!/^[0-9a-f]{128}$/.test(normalized)) {
-    throw new Error("Evidence Capsule root digest must be a 512-bit hexadecimal SHA3 digest");
-  }
-  return buildCertificate("bell", {
-    kind: "evidence-capsule",
-    label: label.trim() || "OmniTrace Evidence Capsule",
-    digest: normalized,
-  });
+  return runBoundDigestCertificate(capsuleRootDigest, label, "evidence-capsule");
 }

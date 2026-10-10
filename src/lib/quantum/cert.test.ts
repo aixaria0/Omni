@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { bellWitness, runBoundCertificate, runCertificateScenario } from "./cert.ts";
+import {
+  bellWitness,
+  runBoundCertificate,
+  runBoundDigestCertificate,
+  runCertificateScenario,
+} from "./cert.ts";
 import { QuantumRegister } from "./register.ts";
 
 test("Bell state is accepted with a -0.5 witness and full quorum", async () => {
@@ -69,4 +74,17 @@ test("bound certificate cryptographically includes an Evidence Capsule root", as
 
 test("bound certificate rejects malformed capsule digests", async () => {
   await assert.rejects(() => runBoundCertificate("not-a-digest", "bad"), /512-bit/);
+});
+
+test("autopilot run root can be bound as a distinct certificate subject", async () => {
+  const root = "cd".repeat(64);
+  const certificate = await runBoundDigestCertificate(
+    root,
+    "autonomous example.com run",
+    "autopilot-run",
+  );
+  assert.equal(certificate.status, "ACCEPTED");
+  assert.equal(certificate.subject?.kind, "autopilot-run");
+  assert.equal(certificate.subject?.digest, root);
+  assert.equal(certificate.binding.verified, true);
 });
