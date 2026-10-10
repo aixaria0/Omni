@@ -5,6 +5,10 @@
 </p>
 
 <p align="center">
+  <strong>Brand:</strong> AixAria &nbsp;·&nbsp; <strong>Created by:</strong> Aria Fani
+</p>
+
+<p align="center">
   <a href="https://github.com/aixaria0/Omni/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/aixaria0/Omni/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="Node 22+" src="https://img.shields.io/badge/Node.js-22%2B-339933?logo=nodedotjs&logoColor=white">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white">
@@ -171,6 +175,10 @@ More detail is in [Architecture](docs/ARCHITECTURE.md) and [Security model](SECU
 ## Contributing
 
 Changes should preserve deterministic verification paths, explicit trust boundaries, and testable claims. Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
+
+## Brand & creator
+
+Omni is an **AixAria** project, created by **Aria Fani**.
 
 ## License
 
