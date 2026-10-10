@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { EvidenceCapsule } from "./capsule";
 import type { Investigation } from "./types";
 
 export type WatchItem = {
@@ -13,12 +14,14 @@ type OsintState = {
   history: Investigation[];
   watchlist: WatchItem[];
   ethicsAccepted: boolean;
+  capsules: Record<string, EvidenceCapsule[]>;
   setCurrent: (inv: Investigation | null) => void;
   remember: (inv: Investigation) => void;
   acceptEthics: () => void;
   addWatch: (query: string, note?: string) => void;
   removeWatch: (query: string) => void;
   clearHistory: () => void;
+  addCapsule: (capsule: EvidenceCapsule) => void;
 };
 
 export const useOsintStore = create<OsintState>()(
@@ -28,12 +31,10 @@ export const useOsintStore = create<OsintState>()(
       history: [],
       watchlist: [],
       ethicsAccepted: false,
+      capsules: {},
       setCurrent: (inv) => set({ current: inv }),
       remember: (inv) => {
-        const history = [
-          inv,
-          ...get().history.filter((h) => h.query !== inv.query),
-        ].slice(0, 16);
+        const history = [inv, ...get().history.filter((h) => h.query !== inv.query)].slice(0, 16);
         set({ current: inv, history });
       },
       acceptEthics: () => set({ ethicsAccepted: true }),
@@ -53,6 +54,15 @@ export const useOsintStore = create<OsintState>()(
           watchlist: get().watchlist.filter((w) => w.query !== query),
         }),
       clearHistory: () => set({ history: [] }),
+      addCapsule: (capsule) => {
+        const query = capsule.subject.query;
+        const existing = get().capsules[query] ?? [];
+        const capsules = [
+          capsule,
+          ...existing.filter((item) => item.rootDigest !== capsule.rootDigest),
+        ].slice(0, 12);
+        set({ capsules: { ...get().capsules, [query]: capsules } });
+      },
     }),
     {
       name: "omnitrace-v1",
@@ -66,6 +76,7 @@ export const useOsintStore = create<OsintState>()(
         })),
         watchlist: s.watchlist,
         ethicsAccepted: s.ethicsAccepted,
+        capsules: s.capsules,
       }),
     },
   ),

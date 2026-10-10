@@ -1,13 +1,7 @@
 import { QuantumRegister } from "./register.ts";
 import { sha3_512Hex } from "./sha3.ts";
 
-export type QuantumScenario =
-  | "bell"
-  | "separable"
-  | "tamper"
-  | "byzantine"
-  | "shadow"
-  | "ghz";
+export type QuantumScenario = "bell" | "separable" | "tamper" | "byzantine" | "shadow" | "ghz";
 
 export type CertificateStatus = "ACCEPTED" | "REJECTED" | "INCONCLUSIVE";
 
@@ -27,9 +21,16 @@ export type QuorumVote = {
   verified: boolean;
 };
 
+export type CertificateSubject = {
+  kind: "evidence-capsule";
+  label: string;
+  digest: string;
+};
+
 export type HybridCertificate = {
   id: string;
   scenario: QuantumScenario;
+  subject?: CertificateSubject;
   status: CertificateStatus;
   createdAt: string;
   proposalDigest: string;
@@ -161,7 +162,7 @@ function ghzWitness(): WitnessRecord {
     method: "ghz-coherence",
     value: round(value),
     uncertainty: 0,
-    observables: { "X^12": round(globalX), "Z0Z1": round(zz01) },
+    observables: { "X^12": round(globalX), Z0Z1: round(zz01) },
     passed: globalX > 0.999,
     explanation:
       "Global X coherence is evaluated as a multipartite GHZ signature; pairwise Z correlation is not labeled pairwise entanglement.",
@@ -180,10 +181,21 @@ function buildWitness(scenario: QuantumScenario) {
   return scenario === "shadow" ? shadowWitness(register) : bellWitness(register);
 }
 
-async function createVote(nodeId: string, message: string, verifyMessage = message): Promise<QuorumVote> {
+async function createVote(
+  nodeId: string,
+  message: string,
+  verifyMessage = message,
+): Promise<QuorumVote> {
   if (!globalThis.crypto?.subtle) throw new Error("WebCrypto is unavailable");
-  const keys = (await globalThis.crypto.subtle.generateKey("Ed25519", true, ["sign", "verify"])) as CryptoKeyPair;
-  const signature = await globalThis.crypto.subtle.sign("Ed25519", keys.privateKey, encoder.encode(message));
+  const keys = (await globalThis.crypto.subtle.generateKey("Ed25519", true, [
+    "sign",
+    "verify",
+  ])) as CryptoKeyPair;
+  const signature = await globalThis.crypto.subtle.sign(
+    "Ed25519",
+    keys.privateKey,
+    encoder.encode(message),
+  );
   const verified = await globalThis.crypto.subtle.verify(
     "Ed25519",
     keys.publicKey,
@@ -214,17 +226,22 @@ function classifyStatus(
   return "ACCEPTED";
 }
 
-export async function runCertificateScenario(
+async function buildCertificate(
   scenario: QuantumScenario,
+  subject?: CertificateSubject,
 ): Promise<HybridCertificate> {
   const witness = buildWitness(scenario);
-  const quantumDigest = sha3_512Hex(stable({
-    method: witness.method,
-    value: witness.value,
-    uncertainty: witness.uncertainty,
-    observables: witness.observables,
-  }));
-  const proposalDigest = sha3_512Hex(stable({ scenario, quantumDigest }));
+  const quantumDigest = sha3_512Hex(
+    stable({
+      method: witness.method,
+      value: witness.value,
+      uncertainty: witness.uncertainty,
+      observables: witness.observables,
+    }),
+  );
+  const proposalDigest = sha3_512Hex(
+    stable({ scenario, quantumDigest, ...(subject ? { subject } : {}) }),
+  );
   const threshold = 3;
   const votes = await Promise.all(
     [0, 1, 2, 3].map((index) => {
@@ -235,33 +252,47 @@ export async function runCertificateScenario(
   );
   const validVotes = votes.filter((vote) => vote.verified).length;
   const quorumPassed = validVotes >= threshold;
-  const quorumDigest = sha3_512Hex(stable({
-    proposalDigest,
-    signatures: votes.filter((vote) => vote.verified).map((vote) => vote.signature).sort(),
-  }));
-  const expectedDigest = sha3_512Hex(`${quorumDigest}:${quantumDigest}`);
-  const digest = scenario === "tamper"
-    ? `${expectedDigest.slice(0, -1)}${expectedDigest.endsWith("0") ? "1" : "0"}`
-    : expectedDigest;
+  const quorumDigest = sha3_512Hex(
+    stable({
+      proposalDigest,
+      signatures: votes
+        .filter((vote) => vote.verified)
+        .map((vote) => vote.signature)
+        .sort(),
+    }),
+  );
+  const bindingMaterial = subject
+    ? `${quorumDigest}:${quantumDigest}:${subject.digest}`
+    : `${quorumDigest}:${quantumDigest}`;
+  const expectedDigest = sha3_512Hex(bindingMaterial);
+  const digest =
+    scenario === "tamper"
+      ? `${expectedDigest.slice(0, -1)}${expectedDigest.endsWith("0") ? "1" : "0"}`
+      : expectedDigest;
   const bindingPassed = digest === expectedDigest;
   const status = classifyStatus(witness, quorumPassed, bindingPassed);
   const anomalies: string[] = [];
 
   if (scenario === "byzantine") {
-    anomalies.push("One validator equivocated; quorum remained valid with 3/4 verified Ed25519 votes.");
+    anomalies.push(
+      "One validator equivocated; quorum remained valid with 3/4 verified Ed25519 votes.",
+    );
   }
   if (quorumPassed && !witness.passed) {
     anomalies.push("Classical quorum succeeded while quantum evidence failed policy.");
   }
   if (!bindingPassed) {
-    anomalies.push("Binding digest mismatch: certificate contents changed after evidence/quorum binding.");
+    anomalies.push(
+      "Binding digest mismatch: certificate contents changed after evidence/quorum binding.",
+    );
   }
 
   const createdAt = new Date().toISOString();
-  const id = sha3_512Hex(stable({ createdAt, proposalDigest, digest })).slice(0, 32);
+  const id = sha3_512Hex(stable({ createdAt, proposalDigest, digest, subject })).slice(0, 32);
   return {
     id,
     scenario,
+    ...(subject ? { subject } : {}),
     status,
     createdAt,
     proposalDigest,
@@ -281,4 +312,25 @@ export async function runCertificateScenario(
     },
     anomalies,
   };
+}
+
+export async function runCertificateScenario(
+  scenario: QuantumScenario,
+): Promise<HybridCertificate> {
+  return buildCertificate(scenario);
+}
+
+export async function runBoundCertificate(
+  capsuleRootDigest: string,
+  label: string,
+): Promise<HybridCertificate> {
+  const normalized = capsuleRootDigest.trim().toLowerCase();
+  if (!/^[0-9a-f]{128}$/.test(normalized)) {
+    throw new Error("Evidence Capsule root digest must be a 512-bit hexadecimal SHA3 digest");
+  }
+  return buildCertificate("bell", {
+    kind: "evidence-capsule",
+    label: label.trim() || "OmniTrace Evidence Capsule",
+    digest: normalized,
+  });
 }
