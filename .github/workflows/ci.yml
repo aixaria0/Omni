@@ -27,7 +27,7 @@ jobs:
           src/lib/auth/gate-identity.test.ts
           src/lib/auth/sign-in-gate.test.ts
           src/lib/quantum/*.test.ts
-          src/lib/osint/capsule.test.ts
+          src/lib/osint/*.test.ts
       - name: Existing platform-script baseline
         continue-on-error: true
         run: node --test 'scripts/**/*.test.mjs'
