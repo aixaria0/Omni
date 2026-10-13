@@ -5,20 +5,21 @@ import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import appCss from "../styles.css?url";
 
-const APP_NAME = "OmniTrace";
+const APP_NAME = "OMNI — Evidence Intelligence Runtime";
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: APP_NAME },
       {
         name: "description",
         content:
-          "OmniTrace — public-source intelligence with Hypothesis Lattice (automated ACH).",
+          "OMNI is a proof-carrying public-infrastructure intelligence workspace for evidence fusion, competing-hypothesis analysis, stress testing, autonomous investigation, and hybrid quantum/classical attestation.",
       },
-      { name: "theme-color", content: "#07080a" },
+      { name: "theme-color", content: "#030609" },
+      { name: "color-scheme", content: "dark" },
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
@@ -26,14 +27,10 @@ export const Route = createRootRoute({
       { rel: "manifest", href: "/__grok/manifest.webmanifest" },
       { rel: "apple-touch-icon", href: "/__grok/icon-180.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      {
-        rel: "preconnect",
-        href: "https://fonts.gstatic.com",
-        crossOrigin: "anonymous",
-      },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap",
       },
     ],
   }),
@@ -44,15 +41,11 @@ function RootComponent() {
   const [queryClient] = useState(() => new QueryClient());
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <HeadContent />
-      </head>
+      <head><HeadContent /></head>
       <body className="bg-bg text-fg antialiased">
         <PreviewHostBridge />
         <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <Outlet />
-          </AuthProvider>
+          <AuthProvider><Outlet /></AuthProvider>
         </QueryClientProvider>
         <Scripts />
       </body>
