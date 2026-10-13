@@ -20,7 +20,7 @@ async function timedFetch(
       signal: ctrl.signal,
       redirect: init.redirect ?? "follow",
       headers: {
-        "User-Agent": UA,
+        ...(typeof window === "undefined" ? { "User-Agent": UA } : {}),
         Accept: "application/json, text/plain, */*",
         ...(init.headers as Record<string, string> | undefined),
       },

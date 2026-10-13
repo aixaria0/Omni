@@ -6,7 +6,7 @@ export const runInvestigation = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<Investigation> => {
     const q = data.query.trim().slice(0, 200);
     if (!q) throw new Error("Query required");
-    const { collectInvestigation } = await import("./collect.server");
+    const { collectInvestigation } = await import("./collect");
     return collectInvestigation(q);
   });
 

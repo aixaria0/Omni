@@ -298,7 +298,16 @@ function Home() {
               <section className="mt-4 min-w-0 rounded-2xl border border-border/70 bg-bg/25 p-3 sm:p-5">
                 {tab === "overview" ? <OverviewPanel inv={current} /> : null}
                 {tab === "lattice" ? (
-                  <LatticeBoard lattice={current.lattice} onUpgrade={() => upgrade.mutate()} upgrading={upgrade.isPending} />
+                  <LatticeBoard
+                    lattice={current.lattice}
+                    onUpgrade={() => upgrade.mutate()}
+                    upgrading={upgrade.isPending}
+                    upgradeLabel={
+                      import.meta.env.VITE_STATIC_PAGES === "true"
+                        ? "Recompute locally"
+                        : "Upgrade with Grok"
+                    }
+                  />
                 ) : null}
                 {tab === "stress" ? <StressLab inv={current} /> : null}
                 {tab === "autopilot" ? <AutopilotPanel inv={current} /> : null}
