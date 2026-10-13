@@ -13,10 +13,12 @@ export function LatticeBoard({
   lattice,
   onUpgrade,
   upgrading,
+  upgradeLabel = "Upgrade with Grok",
 }: {
   lattice: LatticeResult;
   onUpgrade?: () => void;
   upgrading?: boolean;
+  upgradeLabel?: string;
 }) {
   const lead = lattice.hypotheses.find((h) => h.id === lattice.leading);
 
@@ -51,7 +53,7 @@ export function LatticeBoard({
             disabled={upgrading}
             className="h-11 rounded-lg border border-border bg-elevated px-4 text-sm text-fg hover:bg-surface disabled:opacity-40"
           >
-            {upgrading ? "Scoring with Grok…" : "Upgrade with Grok"}
+            {upgrading ? "Recomputing…" : upgradeLabel}
           </button>
         ) : null}
       </div>
