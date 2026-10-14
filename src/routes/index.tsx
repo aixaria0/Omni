@@ -14,6 +14,7 @@ import {
   Database,
   FileCheck2,
   FlaskConical,
+  GitBranch,
   History,
   Layers3,
   Loader2,
@@ -31,10 +32,12 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { AutopilotPanel } from "@/components/osint/autopilot-panel";
 import { EvidenceCapsulePanel } from "@/components/osint/capsule-panel";
+import { ScenarioRoom } from "@/components/osint/scenario-room";
 import { StressLab } from "@/components/osint/stress-lab";
 import { LatticeBoard } from "@/components/osint/lattice-board";
 import { PrismGraph } from "@/components/osint/prism-graph";
 import { OverviewPanel, SourcesPanel, TimelinePanel } from "@/components/osint/overview";
+import { SCENARIO_DEMO } from "@/lib/osint/scenario-demo";
 import { EXAMPLE_QUERIES } from "@/lib/osint/classify";
 import { runGrokLattice, runInvestigation } from "@/lib/osint/investigate";
 import { useOsintStore, type WatchItem } from "@/lib/osint/store";
@@ -46,6 +49,7 @@ export const Route = createFileRoute("/")({ component: Home });
 const TABS = [
   { id: "overview", label: "Overview", icon: Activity },
   { id: "lattice", label: "Lattice", icon: Layers3 },
+  { id: "scenarios", label: "Scenarios", icon: GitBranch },
   { id: "stress", label: "Stress Lab", icon: FlaskConical },
   { id: "autopilot", label: "Autopilot", icon: Sparkles },
   { id: "prism", label: "Prism", icon: Network },
@@ -68,6 +72,7 @@ function Home() {
     addWatch,
     removeWatch,
   } = useOsintStore();
+  const [showTraining, setShowTraining] = useState(false);
   const [query, setQuery] = useState("");
   const [tab, setTab] = useState<TabId>("overview");
   const [error, setError] = useState<string | null>(null);
@@ -212,7 +217,15 @@ function Home() {
           </div>
         ) : null}
 
-        {!current && !investigate.isPending ? <EmptyState onPick={submit} /> : null}
+        {!current && !investigate.isPending ? (
+          <>
+            <EmptyState onPick={submit} onTraining={() => setShowTraining((old) => !old)} />
+            {showTraining && <section className="mt-4">
+              <p className="mb-3 rounded-xl border border-border bg-surface p-4 text-sm text-muted">Synthetic training case · No live collection · Try reducing “CT: shared certificate identity” to cross the decision boundary.</p>
+              <ScenarioRoom inv={SCENARIO_DEMO} />
+            </section>}
+          </>
+        ) : null}
 
         {investigate.isPending ? <LoadingState /> : null}
 
@@ -309,6 +322,9 @@ function Home() {
                     }
                   />
                 ) : null}
+                <div hidden={tab !== "scenarios"}>
+                  <ScenarioRoom key={`${current.id}:${current.collectedAt}:${JSON.stringify(current.lattice)}`} inv={current} />
+                </div>
                 {tab === "stress" ? <StressLab inv={current} /> : null}
                 {tab === "autopilot" ? <AutopilotPanel inv={current} /> : null}
                 {tab === "prism" ? <PrismGraph graph={current.graph} /> : null}
@@ -444,7 +460,7 @@ function LoadingState() {
   );
 }
 
-function EmptyState({ onPick }: { onPick: (q: string) => void }) {
+function EmptyState({ onPick, onTraining }: { onPick: (q: string) => void; onTraining: () => void }) {
   const capabilities = [
     { icon: Layers3, tag: "01", title: "Hypothesis Lattice", desc: "Competing hypotheses scored against explicit evidence instead of opaque conclusions." },
     { icon: FlaskConical, tag: "02", title: "Stress Engine", desc: "Knock out evidence, expose correlated dependencies, and find the minimum decision flip." },
@@ -470,6 +486,10 @@ function EmptyState({ onPick }: { onPick: (q: string) => void }) {
             Omni fuses public-source telemetry into an inspectable evidence graph, challenges its own conclusions, and keeps the path from observation to verdict reproducible.
           </p>
 
+          <Button className="mt-6" variant="secondary" onClick={onTraining}>
+            <GitBranch className="size-4" /> Explore the scenario playground
+            <span className="text-xs text-muted">No network needed</span>
+          </Button>
           <div className="mt-8 flex flex-wrap gap-2">
             {EXAMPLE_QUERIES.slice(0, 4).map((ex) => (
               <button key={ex.q} type="button" onClick={() => onPick(ex.q)} className="group flex h-11 items-center gap-2 rounded-xl border border-border bg-bg/45 px-3.5 font-mono text-xs text-fg transition hover:border-accent/30 hover:bg-accent/5">
