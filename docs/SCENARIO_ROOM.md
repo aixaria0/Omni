@@ -28,3 +28,7 @@ The landing page also offers an explicitly synthetic training playground at
 `training.example`. Its fixed fixture makes no live collection or external truth
 claim and is never inserted into investigation history. Reducing the CT row
 changes the leading hypothesis, demonstrating the decision boundary offline.
+
+In the Observatory edition, the home page starts in the offline exercise itself.
+The Observatory mixing desk shares its active controls with Scenario Room; edits
+in either view appear in the other. See [Observatory](OBSERVATORY.md).

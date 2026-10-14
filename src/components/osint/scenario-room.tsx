@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type Dispatch, type SetStateAction } from "react";
 import { Download, GitBranch, RotateCcw, Save, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { inferEvidenceSources } from "@/lib/osint/stress";
@@ -8,8 +8,19 @@ import type { Investigation } from "@/lib/osint/types";
 type Branch = { name: string; retention: Record<string, number> };
 const pct = (n: number) => `${(n * 100).toFixed(1)}%`;
 
-export function ScenarioRoom({ inv }: { inv: Investigation }) {
-  const [retention, setRetention] = useState<Record<string, number>>({});
+export function ScenarioRoom({
+  inv,
+  controls,
+}: {
+  inv: Investigation;
+  controls?: {
+    retention: Record<string, number>;
+    setRetention: Dispatch<SetStateAction<Record<string, number>>>;
+  };
+}) {
+  const [localRetention, setLocalRetention] = useState<Record<string, number>>({});
+  const retention = controls?.retention ?? localRetention;
+  const setRetention = controls?.setRetention ?? setLocalRetention;
   const [branches, setBranches] = useState<Branch[]>([]);
   const [name, setName] = useState("");
   const [search, setSearch] = useState("");
