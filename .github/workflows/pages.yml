@@ -53,8 +53,8 @@ jobs:
             "start_url": "/Omni/",
             "scope": "/Omni/",
             "display": "standalone",
-            "background_color": "#030609",
-            "theme_color": "#030609",
+            "background_color": "#020805",
+            "theme_color": "#020805",
             "icons": [{"src":"icon-180.png","sizes":"180x180","type":"image/png"}]
           }
           EOF
