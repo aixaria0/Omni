@@ -54,9 +54,9 @@ export function EvidenceAtlas({ graph }: { graph: GraphModel }) {
       drawNext = true;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const styles = getComputedStyle(parent);
-    const accent = styles.getPropertyValue("--color-accent").trim() || "#76e8ff";
-    const muted = styles.getPropertyValue("--color-muted").trim() || "#92a6b2";
-    const fg = styles.getPropertyValue("--color-fg").trim() || "#edf7fb";
+    const accent = styles.getPropertyValue("--color-accent").trim() || "#6ff0a7";
+    const muted = styles.getPropertyValue("--color-muted").trim() || "#8ca99a";
+    const fg = styles.getPropertyValue("--color-fg").trim() || "#eaf8ef";
     const resize = new ResizeObserver(([entry]) => {
       width = entry.contentRect.width;
       height = entry.contentRect.height;
@@ -134,10 +134,10 @@ export function EvidenceAtlas({ graph }: { graph: GraphModel }) {
           ctx!.stroke();
         }
         ctx!.beginPath();
-        ctx!.arc(point.x, point.y, root ? 6 : active ? 4 : 2.5, 0, Math.PI * 2);
+        ctx!.arc(point.x, point.y, root ? 6 : active ? 4.5 : 3, 0, Math.PI * 2);
         ctx!.fill();
-        if (active || root || projected.length < 32 || point.depth > 0.35) {
-          ctx!.globalAlpha = active || root ? 1 : 0.58;
+        if (active || root || projected.length < 16 || point.depth > 0.35) {
+          ctx!.globalAlpha = active || root ? 1 : 0.66;
           ctx!.font = `${active ? 11 : 9}px "IBM Plex Mono", monospace`;
           ctx!.textAlign = "center";
           const label =

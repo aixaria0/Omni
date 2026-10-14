@@ -45,14 +45,14 @@ import type { Investigation } from "@/lib/osint/types";
 export const Route = createFileRoute("/")({ component: Home });
 const VIEWS = [
   { id: "observatory", label: "Observatory", icon: Orbit, caption: "The whole picture" },
-  { id: "lattice", label: "Hypotheses", icon: Layers3, caption: "Competing explanations" },
-  { id: "scenarios", label: "Scenario room", icon: GitBranch, caption: "Alternate outcomes" },
-  { id: "stress", label: "Stress engine", icon: FlaskConical, caption: "Challenge the conclusion" },
-  { id: "autopilot", label: "Autopilot", icon: Sparkles, caption: "Bounded investigation" },
-  { id: "prism", label: "Prism graph", icon: Network, caption: "Inspect connections" },
   { id: "overview", label: "Evidence", icon: Activity, caption: "The underlying observations" },
-  { id: "timeline", label: "Timeline", icon: Clock3, caption: "History of observations" },
   { id: "sources", label: "Sources", icon: Database, caption: "Collector responses" },
+  { id: "timeline", label: "Timeline", icon: Clock3, caption: "History of observations" },
+  { id: "lattice", label: "Hypotheses", icon: Layers3, caption: "Competing explanations" },
+  { id: "prism", label: "Prism graph", icon: Network, caption: "Inspect connections" },
+  { id: "stress", label: "Stress engine", icon: FlaskConical, caption: "Challenge the conclusion" },
+  { id: "scenarios", label: "Scenario room", icon: GitBranch, caption: "Alternate outcomes" },
+  { id: "autopilot", label: "Autopilot", icon: Sparkles, caption: "Bounded investigation" },
   { id: "capsule", label: "Proof capsule", icon: FileCheck2, caption: "Seal and verify" },
 ] as const;
 type ViewId = (typeof VIEWS)[number]["id"];
